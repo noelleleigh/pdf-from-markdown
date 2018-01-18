@@ -1,0 +1,38 @@
+{
+  "name": "pdf-from-markdown",
+  "version": "1.0.0",
+  "description": "Generate a GitHub-styled PDF from a Markdown document at a URL.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Noah Leigh",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "markdown-it": "^8.4.0",
+    "puppeteer": "^1.0.0",
+    "request": "^2.83.0",
+    "tmp": "0.0.33"
+  },
+  "devDependencies": {
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/noahleigh/pdf-from-markdown.git"
+  },
+  "keywords": [
+    "markdown",
+    "pdf",
+    "generator"
+  ],
+  "bugs": {
+    "url": "https://github.com/noahleigh/pdf-from-markdown/issues"
+  },
+  "homepage": "https://github.com/noahleigh/pdf-from-markdown#readme"
+}
