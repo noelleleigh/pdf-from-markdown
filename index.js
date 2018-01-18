@@ -30,6 +30,7 @@ const htmlFileToPDF = async function htmlFileToPDF (htmlFilePath, pdfOptions) {
  * Put an HTML string into an HTML5 boilerplate under `.markdown-body` and
  * return the result. Uses GitHub markdown styling from https://github.com/sindresorhus/github-markdown-css
  * @param {string} htmlString
+ * @returns {string}
  */
 const insertIntoBoilerplate = function insertIntoBoilerplate (htmlString) {
   return `<!DOCTYPE html>
