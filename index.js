@@ -9,7 +9,7 @@ const puppeteer = require('puppeteer')
 // Function definitions
 
 /**
- * Return the contents of a file over HTTP
+ * Get the contents of a file over HTTP
  * @param {string} url - An HTTP URL to a file
  * @param {function} callback - A function that accepts the file contents
  */
@@ -27,7 +27,7 @@ const getBodyFromURL = function (url, callback) {
 }
 
 /**
- * Return the contents of a local file
+ * Get the contents of a local file
  * @param {string} path - Path to a file
  * @param {function} callback - A function that accepts the file contents
  */
@@ -65,7 +65,8 @@ const insertIntoBoilerplate = function (htmlString) {
 }
 
 /**
- * Save a Markdown string to a temporary HTML file and return the path.
+ * Save a Markdown string to a temporary HTML file and
+ * call the callback with the path.
  * The file will be styled using GitHub's Markdown style.
  * @param {string} body - Markdown text
  * @param {function} callback - A function that accepts the HTML file path
@@ -133,7 +134,7 @@ const main = function (inputPath, outputPath) {
 
 if (require.main === module) {
   const argv = require('yargs')
-    .usage('$0 <inputPath> <outputPath>', 'Convert a Markdown file to a PDF with GitHub styling', (yargs) => {
+    .usage('$0 <inputPath> <outputPath>', 'Convert a Markdown file to a PDF File with GitHub styling', (yargs) => {
       yargs.positional('inputPath', {
         describe: 'Path/URL of a Markdown file',
         type: 'string'
