@@ -2,9 +2,13 @@ const fs = require('fs')
 const path = require('path')
 
 const request = require('request')
-const marked = require('marked')
 const tmp = require('tmp')
 const puppeteer = require('puppeteer')
+const marked = require('marked')
+marked.setOptions({
+  gfm: true,
+  breaks: true
+})
 
 // Function definitions
 
