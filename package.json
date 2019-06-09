@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "dotenv": "^4.0.0",
+    "github-markdown-css": "^3.0.1",
     "markdown-it": "^8.4.2",
     "marked": "^0.6.2",
     "puppeteer": "^1.17.0",

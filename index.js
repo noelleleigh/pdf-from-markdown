@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 
 const request = require('request')
 const marked = require('marked')
@@ -52,7 +53,7 @@ const insertIntoBoilerplate = function (htmlString) {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta http-equiv="X-UA-Compatible" content="ie=edge">
       <title>Document</title>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css" integrity="sha256-HbgiGHMLxHZ3kkAiixyvnaaZFNjNWLYKD/QG6PWaQPc=" crossorigin="anonymous" />
+      <link rel="stylesheet" href="${path.resolve('./node_modules/github-markdown-css/github-markdown.css')}" />
   </head>
   <body>
       <main class="markdown-body">
