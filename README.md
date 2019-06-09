@@ -1,7 +1,5 @@
 # pdf-from-markdown
-Generate a GitHub-styled PDF from a Markdown document at a URL using Node.js. Intended for use with documents whose canonical versions live as Markdown files on the web. I got fed up with wrestling with `pandoc` and other tools and decided to make my own that works for my needs using [Node.js](https://nodejs.org/).
-
-Markdown parsing is done with [markdown-it](https://github.com/markdown-it/markdown-it) and PDF generation is done by [puppeteer](https://github.com/GoogleChrome/puppeteer).
+Generate a GitHub-styled PDF from a local or online Markdown document.
 
 ## Install & Usage
 1. Clone from GitHub:
@@ -16,11 +14,23 @@ cd ./pdf-from-markdown
 ```
 npm install
 ```
-4. Create a file named `.env` in the directory and add avariable named `MARKDOWN_URL` in it. Example `.env` contents:
+4. Run Node.js:
 ```
-MARKDOWN_URL=https://www.example.com/markdown_file.md
+> node .\index.js --help
+index.js <inputPath> <outputPath>
+
+Convert a Markdown file to a PDF with GitHub styling
+
+Positionals:
+  inputPath   Path/URL of a Markdown file                               [string]
+  outputPath  Path of the output PDF file                               [string]
+
+Options:
+  --help     Show help                                                 [boolean]
+  --version  Show version number                                       [boolean]
 ```
-5. Run Node.js with the desired output file as the second argument:
-```
-node ./index.js ./markdown-pdf.pdf
-```
+
+## Credits
+- [marked](https://github.com/markedjs/marked): Markdown parsing
+- [github-markdown-css](https://github.com/sindresorhus/github-markdown-css): GitHub CSS styling
+- [puppeteer](https://github.com/GoogleChrome/puppeteer): PDF rendering
