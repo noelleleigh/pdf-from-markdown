@@ -1,29 +1,41 @@
-require('dotenv').config()
-const process = require('process')
 const fs = require('fs')
 
 const request = require('request')
-const md = require('markdown-it')()
+const marked = require('marked')
 const tmp = require('tmp')
 const puppeteer = require('puppeteer')
 
 // Function definitions
 
 /**
- * Generate a PDF from an HTML file.
- * Uses Puppeteer: https://github.com/GoogleChrome/puppeteer
- * @param {string} htmlFilePath
- * @param {Object} pdfOptions Options for [`page.pdf()`](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagepdfoptions)
- * @returns {Promise<string>}
+ * Return the contents of a file over HTTP
+ * @param {string} url - An HTTP URL to a file
+ * @param {function} callback - A function that accepts the file contents
  */
-const htmlFileToPDF = async function htmlFileToPDF (htmlFilePath, pdfOptions) {
-  const browser = await puppeteer.launch()
-  const page = await browser.newPage()
-  await page.goto(`file://${htmlFilePath}`, {waitUntil: 'networkidle2'})
-  await page.pdf(pdfOptions)
-  await browser.close()
+const getBodyFromURL = function (url, callback) {
+  request.get(url, (err, res, body) => {
+    // Handle errors
+    if (err) {
+      throw err
+    }
+    if (res.statusCode !== 200) {
+      throw Error('Status:', res.statusCode, url)
+    }
+    callback(body)
+  })
+}
 
-  return pdfOptions.path
+/**
+ * Return the contents of a local file
+ * @param {string} path - Path to a file
+ * @param {function} callback - A function that accepts the file contents
+ */
+const getBodyFromPath = function (path, callback) {
+  fs.readFile(path, (err, data) => {
+    if (err) throw err
+    const body = data.toString('utf8')
+    callback(body)
+  })
 }
 
 /**
@@ -32,7 +44,7 @@ const htmlFileToPDF = async function htmlFileToPDF (htmlFilePath, pdfOptions) {
  * @param {string} htmlString
  * @returns {string}
  */
-const insertIntoBoilerplate = function insertIntoBoilerplate (htmlString) {
+const insertIntoBoilerplate = function (htmlString) {
   return `<!DOCTYPE html>
   <html lang="en">
   <head>
@@ -40,7 +52,7 @@ const insertIntoBoilerplate = function insertIntoBoilerplate (htmlString) {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta http-equiv="X-UA-Compatible" content="ie=edge">
       <title>Document</title>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css" integrity="sha256-qTBXiGmok0OwSTNA1uvNgoO6GSylS8Ty3TBjogwOxVo=" crossorigin="anonymous" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css" integrity="sha256-HbgiGHMLxHZ3kkAiixyvnaaZFNjNWLYKD/QG6PWaQPc=" crossorigin="anonymous" />
   </head>
   <body>
       <main class="markdown-body">
@@ -52,63 +64,86 @@ const insertIntoBoilerplate = function insertIntoBoilerplate (htmlString) {
 }
 
 /**
- * Save a Markdown document from a URL as a PDF.
- * @param {string} url
- * @param {string} outputPath
+ * Save a Markdown string to a temporary HTML file and return the path.
+ * The file will be styled using GitHub's Markdown style.
+ * @param {string} body - Markdown text
+ * @param {function} callback - A function that accepts the HTML file path
  */
-const makePdfFromMarkdown = function makePdfFromMarkdown (url, outputPath) {
-  request.get(url, (err, res, body) => {
-    // Handle errors
-    if (err) {
-      console.error(err)
-      return
-    }
-    if (res.statusCode !== 200) {
-      console.error('Status:', res.statusCode, url)
-      return
-    }
-    // Convert Markdown to HTML and wrap in boilerplate
-    const htmlFromMarkdown = md.render(body)
-    const fullHtml = insertIntoBoilerplate(htmlFromMarkdown)
+const convertMarkdowntoHTMLFile = function (body, callback) {
+  // Convert Markdown to HTML and wrap in boilerplate
+  const htmlFromMarkdown = marked(body)
+  const fullHtml = insertIntoBoilerplate(htmlFromMarkdown)
 
-    // Make a temp file for the HTML
-    tmp.file({postfix: '.html'}, (err, path) => {
-      if (err) {
-        console.error(err)
-        return
-      }
+  // Make a temp file for the HTML
+  tmp.file({postfix: '.html'}, (err, path) => {
+    if (err) throw err
 
-      // Populate the file
-      fs.writeFile(path, fullHtml, (err) => {
-        if (err) {
-          console.error(err)
-          return
-        }
+    // Populate the file
+    fs.writeFile(path, fullHtml, (err) => {
+      if (err) throw err
+      callback(path)
+    })
+  })
+}
 
-        // Generate a PDF from the contents of that HTML file
-        htmlFileToPDF(path, {
-          path: outputPath,
-          format: 'letter',
-          scale: 0.8,
-          margin: {top: '0.25in', right: '0.5in', bottom: '0.25in', left: '0.5in'}
-        })
+/**
+ * Generate a PDF file from an HTML file.
+ * Uses Puppeteer: https://github.com/GoogleChrome/puppeteer
+ * @param {string} htmlFilePath
+ * @param {Object} pdfOptions Options for [`page.pdf()`](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagepdfoptions)
+ * @returns {Promise<string>}
+ */
+const htmlFileToPDF = async function (htmlFilePath, pdfOptions) {
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+  await page.goto(`file://${htmlFilePath}`, {waitUntil: 'networkidle2'})
+  await page.pdf(pdfOptions)
+  await browser.close()
+
+  return pdfOptions.path
+}
+
+/**
+ * Read a Markdown file and produce a PDF file from its contents.
+ * The file will be styled using Github's style.
+ * @param {string} inputPath - URL or local path to a Markdown file
+ * @param {string} outputPath - Path to the final PDF file
+ */
+const main = function (inputPath, outputPath) {
+  // Decide how we're gonna retrieve the file
+  const fetchFunction = inputPath.startsWith('http') ? getBodyFromURL : getBodyFromPath
+
+  // Get the file contents
+  fetchFunction(inputPath, body => {
+    // Make a temp HTML file from the file contents
+    convertMarkdowntoHTMLFile(body, path => {
+      // Render that HTML file to a PDF file
+      htmlFileToPDF(path, {
+        path: outputPath,
+        format: 'letter',
+        scale: 0.8,
+        margin: {top: '0.25in', right: '0.5in', bottom: '0.25in', left: '0.5in'}
       })
     })
   })
 }
 
-// Main execution
+// Command-line operation
 
-// Make sure we know where to get the Markdown file
-if (process.env.MARKDOWN_URL === undefined) {
-  console.error('Error: .env did not have a MARKDOWN_URL variable. See: https://www.npmjs.com/package/dotenv#usage')
-  process.exit(1)
+if (require.main === module) {
+  const argv = require('yargs')
+    .usage('$0 <inputPath> <outputPath>', 'Convert a Markdown file to a PDF with GitHub styling', (yargs) => {
+      yargs.positional('inputPath', {
+        describe: 'Path/URL of a Markdown file',
+        type: 'string'
+      })
+      yargs.positional('outputPath', {
+        describe: 'Path of the output PDF file',
+        type: 'string'
+      })
+    })
+    .argv
+  main(argv.inputPath, argv.outputPath)
 }
 
-// Make sure we know where to put the PDF
-if (process.argv[2] === undefined) {
-  console.error('Error: Specify file path for output PDF: `node index.js {outputPath}`')
-  process.exit(1)
-}
-
-makePdfFromMarkdown(process.env.MARKDOWN_URL, process.argv[2])
+module.exports = {'pdfFromMarkdown': main}
