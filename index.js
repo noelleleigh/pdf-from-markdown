@@ -50,6 +50,7 @@ const getBodyFromPath = function (path, callback) {
  * @returns {string}
  */
 const insertIntoBoilerplate = function (htmlString) {
+  const cssPath = path.resolve(path.join(__dirname, './node_modules/github-markdown-css/github-markdown.css'))
   return `<!DOCTYPE html>
   <html lang="en">
   <head>
@@ -57,7 +58,7 @@ const insertIntoBoilerplate = function (htmlString) {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta http-equiv="X-UA-Compatible" content="ie=edge">
       <title>Document</title>
-      <link rel="stylesheet" href="${path.resolve('./node_modules/github-markdown-css/github-markdown.css')}" />
+      <link rel="stylesheet" href="${cssPath}" />
   </head>
   <body>
       <main class="markdown-body">
@@ -103,7 +104,13 @@ const htmlFileToPDF = async function (htmlFilePath, pdfOptions) {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   await page.goto(`file://${htmlFilePath}`, {waitUntil: 'networkidle2'})
-  await page.pdf(pdfOptions)
+  await page.pdf(pdfOptions).catch(err => {
+    if (err.syscall === 'open') {
+      console.error(`Could not open "${pdfOptions.path}". Is it open in another program?`)
+    } else {
+      console.error(err)
+    }
+  })
   await browser.close()
 
   return pdfOptions.path
@@ -122,10 +129,10 @@ const main = function (inputPath, outputPath) {
   // Get the file contents
   fetchFunction(inputPath, body => {
     // Make a temp HTML file from the file contents
-    convertMarkdowntoHTMLFile(body, path => {
+    convertMarkdowntoHTMLFile(body, htmlPath => {
       // Render that HTML file to a PDF file
-      htmlFileToPDF(path, {
-        path: outputPath,
+      htmlFileToPDF(htmlPath, {
+        path: path.resolve(outputPath),
         format: 'letter',
         scale: 0.8,
         margin: {top: '0.25in', right: '0.5in', bottom: '0.25in', left: '0.5in'}
