@@ -1,6 +1,8 @@
 # pdf-from-markdown
 Generate a GitHub-styled PDF from a local or online Markdown document.
 
+I wrote this because I was tired of wrestling with pandocs trying to get my Gist-hosted resume into a nice, GitHub-styled PDF. Plus it was a fun exercise!
+
 ## Install & Usage
 1. Clone from GitHub:
 ```
