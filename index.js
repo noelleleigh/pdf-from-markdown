@@ -147,6 +147,8 @@ if (require.main === module) {
         describe: 'Path of the output PDF file',
         type: 'string'
       })
+      yargs.example('$0 https://www.example.com/document.md ./document.pdf', 'Generate a PDF from an online file')
+      yargs.example('$0 C:/Documents/resume.md ./resume.pdf', 'Generate a PDF from a local file')
     })
     .argv
   main(argv.inputPath, argv.outputPath)

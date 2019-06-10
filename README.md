@@ -14,12 +14,12 @@ cd ./pdf-from-markdown
 ```
 npm install
 ```
-4. Run Node.js:
+4. Run with Node.js. Usage:
 ```
 > node .\index.js --help
 index.js <inputPath> <outputPath>
 
-Convert a Markdown file to a PDF with GitHub styling
+Convert a Markdown file to a PDF File with GitHub styling
 
 Positionals:
   inputPath   Path/URL of a Markdown file                               [string]
@@ -28,6 +28,15 @@ Positionals:
 Options:
   --help     Show help                                                 [boolean]
   --version  Show version number                                       [boolean]
+
+Examples:
+  Generate a PDF from an online file:
+
+  node index.js https://www.example.com/document.md ./document.pdf
+
+  Generate a PDF from a local file:
+
+  node index.js C:/Documents/resume.md ./resume.pdf
 ```
 
 ## Credits
