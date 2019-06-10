@@ -4,7 +4,7 @@ Generate a GitHub-styled PDF from a local or online Markdown document.
 ## Install & Usage
 1. Clone from GitHub:
 ```
-git clone https://github.com/noahleigh/pdf-from-markdown.git
+git clone https://github.com/n-leigh/pdf-from-markdown.git
 ```
 2. Enter cloned directory:
 ```
