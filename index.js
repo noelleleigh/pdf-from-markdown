@@ -100,10 +100,13 @@ const convertMarkdowntoHTMLFile = function (body, callback) {
  * @param {Object} pdfOptions Options for [`page.pdf()`](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagepdfoptions)
  * @returns {Promise<string>}
  */
-const htmlFileToPDF = async function (htmlFilePath, pdfOptions) {
-  const browser = await puppeteer.launch()
+const htmlFileToPDF = async function (htmlFilePath, pdfOptions, preview) {
+  const browser = await puppeteer.launch({headless: !preview})
   const page = await browser.newPage()
   await page.goto(`file://${htmlFilePath}`, {waitUntil: 'networkidle2'})
+  if (preview) {
+    return
+  }
   await page.pdf(pdfOptions).catch(err => {
     if (err.syscall === 'open') {
       console.error(`Could not open "${pdfOptions.path}". Is it open in another program?`)
@@ -119,24 +122,24 @@ const htmlFileToPDF = async function (htmlFilePath, pdfOptions) {
 /**
  * Read a Markdown file and produce a PDF file from its contents.
  * The file will be styled using Github's style.
- * @param {string} inputPath - URL or local path to a Markdown file
- * @param {string} outputPath - Path to the final PDF file
+ * @param {object} argv - the arguments passed in from yargs
  */
-const main = function (inputPath, outputPath) {
+const main = function (argv) {
   // Decide how we're gonna retrieve the file
-  const fetchFunction = inputPath.startsWith('http') ? getBodyFromURL : getBodyFromPath
+  const fetchFunction = argv.inputPath.startsWith('http') ? getBodyFromURL : getBodyFromPath
 
   // Get the file contents
-  fetchFunction(inputPath, body => {
+  fetchFunction(argv.inputPath, body => {
     // Make a temp HTML file from the file contents
     convertMarkdowntoHTMLFile(body, htmlPath => {
       // Render that HTML file to a PDF file
       htmlFileToPDF(htmlPath, {
-        path: path.resolve(outputPath),
+        path: path.resolve(argv.outputPath),
         format: 'letter',
-        scale: 0.8,
+        scale: argv.scale,
+        printBackground: true,
         margin: {top: '0.25in', right: '0.5in', bottom: '0.25in', left: '0.5in'}
-      })
+      }, argv.preview)
     })
   })
 }
@@ -154,11 +157,20 @@ if (require.main === module) {
         describe: 'Path of the output PDF file',
         type: 'string'
       })
+      yargs.option('scale', {
+        describe: 'Scale of the webpage rendering. Scale amount must be between 0.1 and 2.',
+        type: 'number',
+        default: 0.8
+      })
+      yargs.option('preview', {
+        describe: 'Get a look at the document instead of rendering it as a PDF',
+        type: 'boolean'
+      })
       yargs.example('$0 https://www.example.com/document.md ./document.pdf', 'Generate a PDF from an online file')
       yargs.example('$0 C:/Documents/resume.md ./resume.pdf', 'Generate a PDF from a local file')
     })
     .argv
-  main(argv.inputPath, argv.outputPath)
+  main(argv)
 }
 
 module.exports = {'pdfFromMarkdown': main}
