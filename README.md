@@ -6,7 +6,7 @@ I wrote this because I was tired of wrestling with pandocs trying to get my Gist
 ## Install & Usage
 1. Clone from GitHub:
 ```
-git clone https://github.com/n-leigh/pdf-from-markdown.git
+git clone https://github.com/noelleleigh/pdf-from-markdown.git
 ```
 2. Enter cloned directory:
 ```
