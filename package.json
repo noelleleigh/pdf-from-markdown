@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Noah Leigh",
+  "author": "Noelle Leigh",
   "license": "MIT",
   "dependencies": {
     "dotenv": "^4.0.0",
@@ -27,7 +27,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/noahleigh/pdf-from-markdown.git"
+    "url": "git+https://github.com/noelleleigh/pdf-from-markdown.git"
   },
   "keywords": [
     "markdown",
@@ -35,7 +35,7 @@
     "generator"
   ],
   "bugs": {
-    "url": "https://github.com/noahleigh/pdf-from-markdown/issues"
+    "url": "https://github.com/noelleleigh/pdf-from-markdown/issues"
   },
-  "homepage": "https://github.com/noahleigh/pdf-from-markdown#readme"
+  "homepage": "https://github.com/noelleleigh/pdf-from-markdown"
 }
