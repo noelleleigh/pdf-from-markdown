@@ -18,7 +18,7 @@ npm install
 ```
 4. Run with Node.js. Usage:
 ```
-> node .\index.js --help
+$ node ./index.js --help
 index.js <inputPath> <outputPath>
 
 Convert a Markdown file to a PDF File with GitHub styling
@@ -30,18 +30,26 @@ Positionals:
 Options:
   --help     Show help                                                 [boolean]
   --version  Show version number                                       [boolean]
+  --scale    Scale of the webpage rendering, between 0.1 and 2.
+                                                         [number] [default: 0.8]
+  --preview  Get a look at the document instead of rendering it as a PDF
+                                                                       [boolean]
+```
 
-Examples:
-  Generate a PDF from an online file:
+### Examples
 
-  node index.js https://www.example.com/document.md ./document.pdf
+Generate a PDF from an online file:
+```
+node ./index.js https://www.example.com/document.md ./document.pdf
+```
 
-  Generate a PDF from a local file:
-
-  node index.js C:/Documents/resume.md ./resume.pdf
+Generate a PDF from a local file:
+```
+node ./index.js C:/Documents/resume.md ./resume.pdf
 ```
 
 ## Credits
+
 - [marked](https://github.com/markedjs/marked): Markdown parsing
 - [github-markdown-css](https://github.com/sindresorhus/github-markdown-css): GitHub CSS styling
 - [puppeteer](https://github.com/GoogleChrome/puppeteer): PDF rendering

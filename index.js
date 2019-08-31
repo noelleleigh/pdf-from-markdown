@@ -148,7 +148,7 @@ const main = function (argv) {
 
 if (require.main === module) {
   const argv = require('yargs')
-    .usage('$0 <inputPath> <outputPath>', 'Convert a Markdown file to a PDF File with GitHub styling', (yargs) => {
+    .usage('$0 <inputPath> <outputPath>', 'Convert a Markdown file to a PDF file with GitHub styling.', (yargs) => {
       yargs.positional('inputPath', {
         describe: 'Path/URL of a Markdown file',
         type: 'string'
@@ -158,7 +158,7 @@ if (require.main === module) {
         type: 'string'
       })
       yargs.option('scale', {
-        describe: 'Scale of the webpage rendering. Scale amount must be between 0.1 and 2.',
+        describe: 'Scale of the webpage rendering, between 0.1 and 2.',
         type: 'number',
         default: 0.8
       })
@@ -166,8 +166,6 @@ if (require.main === module) {
         describe: 'Get a look at the document instead of rendering it as a PDF',
         type: 'boolean'
       })
-      yargs.example('$0 https://www.example.com/document.md ./document.pdf', 'Generate a PDF from an online file')
-      yargs.example('$0 C:/Documents/resume.md ./resume.pdf', 'Generate a PDF from a local file')
     })
     .argv
   main(argv)
