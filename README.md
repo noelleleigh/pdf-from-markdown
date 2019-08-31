@@ -43,9 +43,9 @@ Generate a PDF from an online file:
 node ./index.js https://www.example.com/document.md ./document.pdf
 ```
 
-Generate a PDF from a local file:
+Generate a PDF from a local file with a scale factor of 0.75:
 ```
-node ./index.js C:/Documents/resume.md ./resume.pdf
+node ./index.js C:/Documents/resume.md ./resume.pdf --scale 0.75
 ```
 
 ## Credits
