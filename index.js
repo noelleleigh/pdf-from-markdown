@@ -82,7 +82,7 @@ const convertMarkdowntoHTMLFile = function (body, callback) {
   const fullHtml = insertIntoBoilerplate(htmlFromMarkdown)
 
   // Make a temp file for the HTML
-  tmp.file({postfix: '.html'}, (err, path) => {
+  tmp.file({ postfix: '.html' }, (err, path) => {
     if (err) throw err
 
     // Populate the file
@@ -101,9 +101,9 @@ const convertMarkdowntoHTMLFile = function (body, callback) {
  * @returns {Promise<string>}
  */
 const htmlFileToPDF = async function (htmlFilePath, pdfOptions, preview) {
-  const browser = await puppeteer.launch({headless: !preview})
+  const browser = await puppeteer.launch({ headless: !preview })
   const page = await browser.newPage()
-  await page.goto(`file://${htmlFilePath}`, {waitUntil: 'networkidle2'})
+  await page.goto(`file://${htmlFilePath}`, { waitUntil: 'networkidle2' })
   if (preview) {
     return
   }
@@ -138,7 +138,7 @@ const main = function (argv) {
         format: 'letter',
         scale: argv.scale,
         printBackground: true,
-        margin: {top: '0.25in', right: '0.5in', bottom: '0.25in', left: '0.5in'}
+        margin: { top: '0.25in', right: '0.5in', bottom: '0.25in', left: '0.5in' }
       }, argv.preview)
     })
   })
@@ -171,4 +171,4 @@ if (require.main === module) {
   main(argv)
 }
 
-module.exports = {'pdfFromMarkdown': main}
+module.exports = { pdfFromMarkdown: main }
