@@ -11,10 +11,10 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "github-markdown-css": "^4.0.0",
-    "marked": "^0.8.0",
-    "puppeteer": "^2.1.1",
+    "marked": "^1.1.1",
+    "puppeteer": "^5.2.0",
     "request": "^2.88.0",
-    "tmp": "0.1.0",
+    "tmp": "^0.2.1",
     "yargs": "^15.3.0"
   },
   "devDependencies": {
