@@ -1,10 +1,11 @@
 const fs = require('fs')
+const https = require('https')
 const path = require('path')
 
-const request = require('request')
 const tmp = require('tmp')
 const puppeteer = require('puppeteer')
 const marked = require('marked')
+
 marked.setOptions({
   gfm: true,
   breaks: true
@@ -13,21 +14,85 @@ marked.setOptions({
 // Function definitions
 
 /**
+ * https://stackoverflow.com/a/55214702
+ * @param {string} method
+ * @param {string} url
+ * @param {*} body
+ */
+const httpRequest = (method, url, body = null) => {
+  if (!['get', 'post', 'head'].includes(method)) {
+    throw new Error(`Invalid method: ${method}`)
+  }
+
+  let urlObject
+
+  try {
+    urlObject = new URL(url)
+  } catch (error) {
+    throw new Error(`Invalid url ${url}`)
+  }
+
+  if (body && method !== 'post') {
+    throw new Error(`Invalid use of the body parameter while using the ${method.toUpperCase()} method.`)
+  }
+
+  const options = {
+    method: method.toUpperCase(),
+    hostname: urlObject.hostname,
+    port: urlObject.port,
+    path: urlObject.pathname
+  }
+
+  if (body) {
+    options.headers = { 'Content-Length': Buffer.byteLength(body) }
+  }
+
+  return new Promise((resolve, reject) => {
+    const clientRequest = https.request(options, incomingMessage => {
+      // Response object.
+      const response = {
+        statusCode: incomingMessage.statusCode,
+        headers: incomingMessage.headers,
+        body: []
+      }
+
+      // Collect response body data.
+      incomingMessage.on('data', chunk => {
+        response.body.push(chunk)
+      })
+
+      // Resolve on end.
+      incomingMessage.on('end', () => {
+        if (response.body.length) {
+          response.body = response.body.join()
+        }
+
+        resolve(response)
+      })
+    })
+
+    // Reject on request error.
+    clientRequest.on('error', error => {
+      reject(error)
+    })
+
+    // Write request body if present.
+    if (body) {
+      clientRequest.write(body)
+    }
+
+    // Close HTTP connection.
+    clientRequest.end()
+  })
+}
+
+/**
  * Get the contents of a file over HTTP
  * @param {string} url - An HTTP URL to a file
  * @param {function} callback - A function that accepts the file contents
  */
 const getBodyFromURL = function (url, callback) {
-  request.get(url, (err, res, body) => {
-    // Handle errors
-    if (err) {
-      throw err
-    }
-    if (res.statusCode !== 200) {
-      throw Error('Status:', res.statusCode, url)
-    }
-    callback(body)
-  })
+  return httpRequest('get', url).then(res => callback(res.body))
 }
 
 /**
