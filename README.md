@@ -63,4 +63,4 @@ node ./index.js C:/Documents/resume.md ./resume.pdf --scale 0.75
 
 - [marked](https://github.com/markedjs/marked): Markdown parsing
 - [github-markdown-css](https://github.com/sindresorhus/github-markdown-css): GitHub CSS styling
-- [puppeteer](https://github.com/GoogleChrome/puppeteer): PDF rendering
+- [puppeteer](https://github.com/puppeteer/puppeteer): PDF rendering
