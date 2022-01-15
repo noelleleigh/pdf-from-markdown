@@ -1,15 +1,15 @@
-const fs = require('fs')
-const https = require('https')
-const path = require('path')
+const fs = require("fs");
+const https = require("https");
+const path = require("path");
 
-const tmp = require('tmp')
-const puppeteer = require('puppeteer')
-const { marked } = require('marked')
+const tmp = require("tmp");
+const puppeteer = require("puppeteer");
+const { marked } = require("marked");
 
 marked.setOptions({
   gfm: true,
-  breaks: true
-})
+  breaks: true,
+});
 
 // Function definitions
 
@@ -20,71 +20,73 @@ marked.setOptions({
  * @param {*} body
  */
 const httpRequest = (method, url, body = null) => {
-  if (!['get', 'post', 'head'].includes(method)) {
-    throw new Error(`Invalid method: ${method}`)
+  if (!["get", "post", "head"].includes(method)) {
+    throw new Error(`Invalid method: ${method}`);
   }
 
-  let urlObject
+  let urlObject;
 
   try {
-    urlObject = new URL(url)
+    urlObject = new URL(url);
   } catch (error) {
-    throw new Error(`Invalid url ${url}`)
+    throw new Error(`Invalid url ${url}`);
   }
 
-  if (body && method !== 'post') {
-    throw new Error(`Invalid use of the body parameter while using the ${method.toUpperCase()} method.`)
+  if (body && method !== "post") {
+    throw new Error(
+      `Invalid use of the body parameter while using the ${method.toUpperCase()} method.`
+    );
   }
 
   const options = {
     method: method.toUpperCase(),
     hostname: urlObject.hostname,
     port: urlObject.port,
-    path: urlObject.pathname
-  }
+    path: urlObject.pathname,
+  };
 
   if (body) {
-    options.headers = { 'Content-Length': Buffer.byteLength(body) }
+    options.headers = { "Content-Length": Buffer.byteLength(body) };
   }
 
   return new Promise((resolve, reject) => {
-    const clientRequest = https.request(options, incomingMessage => {
+    const clientRequest = https.request(options, (incomingMessage) => {
       // Response object.
       const response = {
         statusCode: incomingMessage.statusCode,
         headers: incomingMessage.headers,
-        body: []
-      }
+        body: [],
+      };
 
       // Collect response body data.
-      incomingMessage.on('data', chunk => {
-        response.body.push(chunk)
-      })
+      incomingMessage.on("data", (chunk) => {
+        response.body.push(chunk);
+      });
 
       // Resolve on end.
-      incomingMessage.on('end', () => {
+      incomingMessage.on("end", () => {
         if (response.body.length) {
-          response.body = response.body.join()
+          response.body = response.body.join();
         }
 
-        resolve(response)
-      })
-    })
+        resolve(response);
+      });
+    });
 
     // Reject on request error.
-    clientRequest.on('error', error => {
-      reject(error)
-    })
+    clientRequest.on("error", (error) => {
+      reject(error);
+    });
 
     // Write request body if present.
     if (body) {
-      clientRequest.write(body)
+      clientRequest.write(body);
     }
 
     // Close HTTP connection.
-    clientRequest.end()
-  })
-}
+    clientRequest.end();
+  });
+};
 
 /**
  * Get the contents of a file over HTTP
@@ -92,8 +94,8 @@ const httpRequest = (method, url, body = null) => {
  * @param {function} callback - A function that accepts the file contents
  */
 const getBodyFromURL = function (url, callback) {
-  return httpRequest('get', url).then(res => callback(res.body))
-}
+  return httpRequest("get", url).then((res) => callback(res.body));
+};
 
 /**
  * Get the contents of a local file
@@ -102,11 +104,11 @@ const getBodyFromURL = function (url, callback) {
  */
 const getBodyFromPath = function (path, callback) {
   fs.readFile(path, (err, data) => {
-    if (err) throw err
-    const body = data.toString('utf8')
-    callback(body)
-  })
-}
+    if (err) throw err;
+    const body = data.toString("utf8");
+    callback(body);
+  });
+};
 
 /**
  * Put an HTML string into an HTML5 boilerplate under `.markdown-body` and
@@ -115,7 +117,12 @@ const getBodyFromPath = function (path, callback) {
  * @returns {string}
  */
 const insertIntoBoilerplate = function (htmlString) {
-  const cssPath = path.resolve(path.join(__dirname, './node_modules/github-markdown-css/github-markdown.css'))
+  const cssPath = path.resolve(
+    path.join(
+      __dirname,
+      "./node_modules/github-markdown-css/github-markdown.css"
+    )
+  );
   return `<!DOCTYPE html>
   <html lang="en">
   <head>
@@ -131,8 +138,8 @@ const insertIntoBoilerplate = function (htmlString) {
       </main>
   </body>
   </html>
-  `
-}
+  `;
+};
 
 /**
  * Save a Markdown string to a temporary HTML file and
@@ -143,20 +150,20 @@ const insertIntoBoilerplate = function (htmlString) {
  */
 const convertMarkdowntoHTMLFile = function (body, callback) {
   // Convert Markdown to HTML and wrap in boilerplate
-  const htmlFromMarkdown = marked(body)
-  const fullHtml = insertIntoBoilerplate(htmlFromMarkdown)
+  const htmlFromMarkdown = marked(body);
+  const fullHtml = insertIntoBoilerplate(htmlFromMarkdown);
 
   // Make a temp file for the HTML
-  tmp.file({ postfix: '.html' }, (err, path) => {
-    if (err) throw err
+  tmp.file({ postfix: ".html" }, (err, path) => {
+    if (err) throw err;
 
     // Populate the file
     fs.writeFile(path, fullHtml, (err) => {
-      if (err) throw err
-      callback(path)
-    })
-  })
-}
+      if (err) throw err;
+      callback(path);
+    });
+  });
+};
 
 /**
  * Generate a PDF file from an HTML file.
@@ -166,23 +173,28 @@ const convertMarkdowntoHTMLFile = function (body, callback) {
  * @returns {Promise<string>}
  */
 const htmlFileToPDF = async function (htmlFilePath, pdfOptions, preview) {
-  const browser = await puppeteer.launch({ headless: !preview, args: ['--export-tagged-pdf'] })
-  const page = await browser.newPage()
-  await page.goto(`file://${htmlFilePath}`, { waitUntil: 'networkidle2' })
+  const browser = await puppeteer.launch({
+    headless: !preview,
+    args: ["--export-tagged-pdf"],
+  });
+  const page = await browser.newPage();
+  await page.goto(`file://${htmlFilePath}`, { waitUntil: "networkidle2" });
   if (preview) {
-    return
+    return;
   }
-  await page.pdf(pdfOptions).catch(err => {
-    if (err.syscall === 'open') {
-      console.error(`Could not open "${pdfOptions.path}". Is it open in another program?`)
+  await page.pdf(pdfOptions).catch((err) => {
+    if (err.syscall === "open") {
+      console.error(
+        `Could not open "${pdfOptions.path}". Is it open in another program?`
+      );
     } else {
-      console.error(err)
+      console.error(err);
     }
-  })
-  await browser.close()
+  });
+  await browser.close();
 
-  return pdfOptions.path
-}
+  return pdfOptions.path;
+};
 
 /**
  * Read a Markdown file and produce a PDF file from its contents.
@@ -191,49 +203,62 @@ const htmlFileToPDF = async function (htmlFilePath, pdfOptions, preview) {
  */
 const main = function (argv) {
   // Decide how we're gonna retrieve the file
-  const fetchFunction = argv.inputPath.startsWith('http') ? getBodyFromURL : getBodyFromPath
+  const fetchFunction = argv.inputPath.startsWith("http")
+    ? getBodyFromURL
+    : getBodyFromPath;
 
   // Get the file contents
-  fetchFunction(argv.inputPath, body => {
+  fetchFunction(argv.inputPath, (body) => {
     // Make a temp HTML file from the file contents
-    convertMarkdowntoHTMLFile(body, htmlPath => {
+    convertMarkdowntoHTMLFile(body, (htmlPath) => {
       // Render that HTML file to a PDF file
-      htmlFileToPDF(htmlPath, {
-        path: path.resolve(argv.outputPath),
-        format: 'letter',
-        scale: argv.scale,
-        printBackground: true,
-        margin: { top: '0.25in', right: '0.5in', bottom: '0.25in', left: '0.5in' }
-      }, argv.preview)
-    })
-  })
-}
+      htmlFileToPDF(
+        htmlPath,
+        {
+          path: path.resolve(argv.outputPath),
+          format: "letter",
+          scale: argv.scale,
+          printBackground: true,
+          margin: {
+            top: "0.25in",
+            right: "0.5in",
+            bottom: "0.25in",
+            left: "0.5in",
+          },
+        },
+        argv.preview
+      );
+    });
+  });
+};
 
 // Command-line operation
 
 if (require.main === module) {
-  const argv = require('yargs')
-    .usage('$0 <inputPath> <outputPath>', 'Convert a Markdown file to a PDF file with GitHub styling.', (yargs) => {
-      yargs.positional('inputPath', {
-        describe: 'Path/URL of a Markdown file',
-        type: 'string'
-      })
-      yargs.positional('outputPath', {
-        describe: 'Path of the output PDF file',
-        type: 'string'
-      })
-      yargs.option('scale', {
-        describe: 'Scale of the webpage rendering, between 0.1 and 2.',
-        type: 'number',
-        default: 0.8
-      })
-      yargs.option('preview', {
-        describe: 'Get a look at the document instead of rendering it as a PDF',
-        type: 'boolean'
-      })
-    })
-    .argv
-  main(argv)
+  const argv = require("yargs").usage(
+    "$0 <inputPath> <outputPath>",
+    "Convert a Markdown file to a PDF file with GitHub styling.",
+    (yargs) => {
+      yargs.positional("inputPath", {
+        describe: "Path/URL of a Markdown file",
+        type: "string",
+      });
+      yargs.positional("outputPath", {
+        describe: "Path of the output PDF file",
+        type: "string",
+      });
+      yargs.option("scale", {
+        describe: "Scale of the webpage rendering, between 0.1 and 2.",
+        type: "number",
+        default: 0.8,
+      });
+      yargs.option("preview", {
+        describe: "Get a look at the document instead of rendering it as a PDF",
+        type: "boolean",
+      });
+    }
+  ).argv;
+  main(argv);
 }
 
-module.exports = { pdfFromMarkdown: main }
+module.exports = { pdfFromMarkdown: main };

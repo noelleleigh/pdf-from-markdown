@@ -8,42 +8,42 @@ I wrote this because I was tired of wrestling with pandocs trying to get my Gist
 
 1. Clone from GitHub:
 
-    ```bash
-    git clone https://github.com/noelleleigh/pdf-from-markdown.git
-    ```
+   ```bash
+   git clone https://github.com/noelleleigh/pdf-from-markdown.git
+   ```
 
 2. Enter cloned directory:
 
-    ```bash
-    cd ./pdf-from-markdown
-    ```
+   ```bash
+   cd ./pdf-from-markdown
+   ```
 
 3. Install dependencies:
 
-    ```bash
-    npm install
-    ```
+   ```bash
+   npm install
+   ```
 
 4. Run with Node.js. Usage:
 
-    ```bash
-    $ node ./index.js --help
-    index.js <inputPath> <outputPath>
+   ```bash
+   $ node ./index.js --help
+   index.js <inputPath> <outputPath>
 
-    Convert a Markdown file to a PDF File with GitHub styling
+   Convert a Markdown file to a PDF File with GitHub styling
 
-    Positionals:
-      inputPath   Path/URL of a Markdown file                               [string]
-      outputPath  Path of the output PDF file                               [string]
+   Positionals:
+     inputPath   Path/URL of a Markdown file                               [string]
+     outputPath  Path of the output PDF file                               [string]
 
-    Options:
-      --help     Show help                                                 [boolean]
-      --version  Show version number                                       [boolean]
-      --scale    Scale of the webpage rendering, between 0.1 and 2.
-                                                            [number] [default: 0.8]
-      --preview  Get a look at the document instead of rendering it as a PDF
-                                                                          [boolean]
-    ```
+   Options:
+     --help     Show help                                                 [boolean]
+     --version  Show version number                                       [boolean]
+     --scale    Scale of the webpage rendering, between 0.1 and 2.
+                                                           [number] [default: 0.8]
+     --preview  Get a look at the document instead of rendering it as a PDF
+                                                                         [boolean]
+   ```
 
 ### Examples
 
