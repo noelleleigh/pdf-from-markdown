@@ -58,6 +58,11 @@ const httpRequest = (method, url, body = null) => {
         body: [],
       };
 
+      if (response.statusCode >= 300 && response.statusCode <= 399) {
+        // Follow redirect
+        resolve(httpRequest(method, response.headers["location"], body))
+      }
+
       // Collect response body data.
       incomingMessage.on("data", (chunk) => {
         response.body.push(chunk);
