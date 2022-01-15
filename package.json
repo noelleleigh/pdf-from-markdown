@@ -11,7 +11,7 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "github-markdown-css": "^4.0.0",
-    "marked": "^2.0.0",
+    "marked": "^4.0.10",
     "puppeteer": "^7.0.1",
     "tmp": "^0.2.1",
     "yargs": "^16.2.0"

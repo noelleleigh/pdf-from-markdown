@@ -4,7 +4,7 @@ const path = require('path')
 
 const tmp = require('tmp')
 const puppeteer = require('puppeteer')
-const marked = require('marked')
+const { marked } = require('marked')
 
 marked.setOptions({
   gfm: true,
