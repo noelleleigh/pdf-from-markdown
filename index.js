@@ -166,7 +166,7 @@ const convertMarkdowntoHTMLFile = function (body, callback) {
  * @returns {Promise<string>}
  */
 const htmlFileToPDF = async function (htmlFilePath, pdfOptions, preview) {
-  const browser = await puppeteer.launch({ headless: !preview })
+  const browser = await puppeteer.launch({ headless: !preview, args: ['--export-tagged-pdf'] })
   const page = await browser.newPage()
   await page.goto(`file://${htmlFilePath}`, { waitUntil: 'networkidle2' })
   if (preview) {
