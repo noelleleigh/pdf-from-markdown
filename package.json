@@ -12,7 +12,7 @@
     "dotenv": "^8.2.0",
     "github-markdown-css": "^4.0.0",
     "marked": "^4.0.10",
-    "puppeteer": "^13.7.0",
+    "puppeteer": "^22.11.2",
     "tmp": "^0.2.1",
     "yargs": "^16.2.0"
   },
