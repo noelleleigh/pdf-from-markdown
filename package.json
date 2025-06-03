@@ -17,9 +17,11 @@
     "yargs": "^16.2.0"
   },
   "devDependencies": {
-    "eslint": "^8.6.0",
-    "eslint-config-prettier": "^8.3.0",
-    "prettier": "2.5.1"
+    "@eslint/js": "^9.28.0",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "globals": "^16.2.0",
+    "prettier": "3.5.3"
   },
   "repository": {
     "type": "git",

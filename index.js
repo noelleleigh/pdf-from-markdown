@@ -34,7 +34,7 @@ const httpRequest = (method, url, body = null) => {
 
   if (body && method !== "post") {
     throw new Error(
-      `Invalid use of the body parameter while using the ${method.toUpperCase()} method.`
+      `Invalid use of the body parameter while using the ${method.toUpperCase()} method.`,
     );
   }
 
@@ -60,7 +60,7 @@ const httpRequest = (method, url, body = null) => {
 
       if (response.statusCode >= 300 && response.statusCode <= 399) {
         // Follow redirect
-        resolve(httpRequest(method, response.headers["location"], body))
+        resolve(httpRequest(method, response.headers["location"], body));
       }
 
       // Collect response body data.
@@ -125,8 +125,8 @@ const insertIntoBoilerplate = function (htmlString) {
   const cssPath = path.resolve(
     path.join(
       __dirname,
-      "./node_modules/github-markdown-css/github-markdown.css"
-    )
+      "./node_modules/github-markdown-css/github-markdown.css",
+    ),
   );
   return `<!DOCTYPE html>
   <html lang="en">
@@ -190,7 +190,7 @@ const htmlFileToPDF = async function (htmlFilePath, pdfOptions, preview) {
   await page.pdf(pdfOptions).catch((err) => {
     if (err.syscall === "open") {
       console.error(
-        `Could not open "${pdfOptions.path}". Is it open in another program?`
+        `Could not open "${pdfOptions.path}". Is it open in another program?`,
       );
     } else {
       console.error(err);
@@ -231,7 +231,7 @@ const main = function (argv) {
             left: "0.5in",
           },
         },
-        argv.preview
+        argv.preview,
       );
     });
   });
@@ -261,7 +261,7 @@ if (require.main === module) {
         describe: "Get a look at the document instead of rendering it as a PDF",
         type: "boolean",
       });
-    }
+    },
   ).argv;
   main(argv);
 }
