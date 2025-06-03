@@ -10,7 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "github-markdown-css": "^4.0.0",
-    "marked": "^4.0.10",
+    "marked": "^15.0.12",
     "puppeteer": "^24.10.0",
     "tmp": "^0.2.3",
     "yargs": "^16.2.0"
