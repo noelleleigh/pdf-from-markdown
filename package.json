@@ -9,7 +9,7 @@
   "author": "Noelle Leigh",
   "license": "MIT",
   "dependencies": {
-    "github-markdown-css": "^4.0.0",
+    "github-markdown-css": "^5.8.1",
     "marked": "^15.0.12",
     "puppeteer": "^24.10.0",
     "tmp": "^0.2.3",
