@@ -240,7 +240,8 @@ const main = function (argv) {
 // Command-line operation
 
 if (require.main === module) {
-  const argv = require("yargs").usage(
+  const yargs = require("yargs")
+  const argv = yargs(process.argv.slice(2)).usage(
     "$0 <inputPath> <outputPath>",
     "Convert a Markdown file to a PDF file with GitHub styling.",
     (yargs) => {

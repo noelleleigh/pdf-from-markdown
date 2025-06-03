@@ -30,7 +30,7 @@ I wrote this because I was tired of wrestling with pandocs trying to get my Gist
    $ node ./index.js --help
    index.js <inputPath> <outputPath>
 
-   Convert a Markdown file to a PDF File with GitHub styling
+   Convert a Markdown file to a PDF file with GitHub styling.
 
    Positionals:
      inputPath   Path/URL of a Markdown file                               [string]
@@ -40,9 +40,9 @@ I wrote this because I was tired of wrestling with pandocs trying to get my Gist
      --help     Show help                                                 [boolean]
      --version  Show version number                                       [boolean]
      --scale    Scale of the webpage rendering, between 0.1 and 2.
-                                                           [number] [default: 0.8]
+                                                            [number] [default: 0.8]
      --preview  Get a look at the document instead of rendering it as a PDF
-                                                                         [boolean]
+                                                                          [boolean]
    ```
 
 ### Examples
