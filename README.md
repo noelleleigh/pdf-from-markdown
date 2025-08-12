@@ -1,3 +1,5 @@
+Archived: [Project moved to SourceHut](https://git.sr.ht/~noelle/pdf-from-markdown)
+
 # pdf-from-markdown
 
 Generate a GitHub-styled PDF from a local or online Markdown document.
